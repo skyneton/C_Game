@@ -33,6 +33,8 @@ public:
 private:
 	float moveLock;
 	DWORD shootDelay;
+	DWORD dashDelay;
+	DWORD dashTimer;
 	DWORD doubleClickUPDelay;
 	DWORD doubleClickLeftDelay;
 	DWORD doubleClickDownDelay;
@@ -40,5 +42,7 @@ private:
 	static int stage;
 	static int healingChance;
 	float MaxHP;
+	bool dash_status;
+	bool dash_once;
 };
 

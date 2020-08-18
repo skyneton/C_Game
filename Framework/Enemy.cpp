@@ -84,10 +84,12 @@ void Enemy::Shoot() {
 		float otherY = player->transform->position.y;
 
 		shootDelay = now;
+
+		srand(timeGetTime());
+
 		switch (Player::GetStage()) {
 			case 1: {
 				Bullet* b;
-				srand(timeGetTime());
 				if (rand() % 101 <= 70) {
 					b = new Bullet(L"resources/arrow4.png");
 					b->damage = 5.0f * (Player::GetStage() * 0.8f);
@@ -111,7 +113,6 @@ void Enemy::Shoot() {
 			case 2: {
 
 				Bullet* b;
-				srand(timeGetTime());
 				if (rand() % 101 <= 70) {
 					b = new Bullet(L"resources/arrow4.png");
 					b->damage = 5.0f * (Player::GetStage() * 0.8f);
@@ -133,7 +134,6 @@ void Enemy::Shoot() {
 				break;
 			}
 			case 3: {
-				srand(timeGetTime());
 				if (rand() % 101 <= 40) {
 
 					Bullet* b;
@@ -184,7 +184,6 @@ void Enemy::Shoot() {
 				break;
 			}
 			case 4: {
-				srand(timeGetTime());
 				if (rand() % 101 <= 40) {
 
 					Bullet* b;
@@ -228,7 +227,7 @@ void Enemy::Shoot() {
 					((Player*)player)->bm->PushBackEnemyBullet(b);
 
 					b->transform->position = this->transform->position;
-					b->angleRate = 0.17f;
+					b->angleRate = 0.2f;
 					b->angle = i;
 					b->transform->SetRotation(90.0f + b->angle);
 				}
@@ -239,7 +238,6 @@ void Enemy::Shoot() {
 				if (rand() % 101 <= 40) {
 
 					Bullet* b;
-					srand(timeGetTime());
 					if (rand() % 101 <= 70) {
 						b = new Bullet(L"resources/arrow4.png");
 						b->damage = 5.0f * (Player::GetStage() * 0.8f);
@@ -264,7 +262,6 @@ void Enemy::Shoot() {
 				for (float i = 0; i < 1; i += 0.15) {
 
 					Bullet* b;
-					srand(timeGetTime());
 					if (rand() % 101 <= 70) {
 						b = new Bullet(L"resources/arrow4.png");
 						b->damage = 5.0f * (Player::GetStage() * 0.8f);
@@ -280,7 +277,7 @@ void Enemy::Shoot() {
 					((Player*)player)->bm->PushBackEnemyBullet(b);
 
 					b->transform->position = this->transform->position;
-					b->angleRate = 0.17f;
+					b->angleRate = 0.2f;
 					b->angle = i;
 					b->transform->SetRotation(90.0f + b->angle);
 				}

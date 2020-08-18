@@ -9,6 +9,9 @@
 #define DOUBLE_CLICK 250
 #define PI 3.141592653589793f
 #define SHOOT_MOUSE_LOC false
+#define DASH_COOL 6000
+#define DASH_START 4000
+#define DASH_AMOUNT 2.3f
 
 int Player::stage;
 int Player::healingChance;
@@ -90,53 +93,83 @@ void Player::Move() {
 	//움직임을 담당
 	float y = transform->position.y;
 	float x = transform->position.x;
+
+	DWORD now = timeGetTime();
+
+	float dash = 1.0f;
+
+	if (now - dashDelay >= DASH_COOL && !dash_status) {
+		dash_status = true;
+		printf("CAN DASH\n");
+		dashTimer = now;
+		dash_once = false;
+	}
+
+	if (dash_status && dash_once && now - dashTimer > DASH_START) {
+		dash_status = false;
+		dashDelay = now;
+		printf("CAN't DASH\n");
+	}
+
+	if (dash_status && InputManager::GetKeyDown(VK_SHIFT)) {
+		dashTimer = now;
+	}
+
+	if (dash_status && InputManager::GetKeyState(VK_SHIFT)) {
+		if (now - dashTimer <= DASH_START) {
+			dash = DASH_AMOUNT;
+			dash_once = true;
+		}
+		else {
+			dash_status = false;
+			dashDelay = now;
+			printf("CAN't DASH\n");
+		}
+	}
+
 	if (InputManager::GetKeyState('W') || InputManager::GetKeyState(VK_UP)) {
-		transform->position.y -= moveSpeed * TimerManager::GetDeltaTime();
+		transform->position.y -= moveSpeed * dash * TimerManager::GetDeltaTime();
 
 		if (InputManager::GetKeyDown('W') || InputManager::GetKeyDown(VK_UP)) {
-			DWORD now = timeGetTime();
 			if (now - doubleClickUPDelay <= DOUBLE_CLICK) {
 				printf("UP DOUBLE CLICK\n");
-				transform->position.y -= TELEPORT_AMOUNT;
+				transform->position.y -= TELEPORT_AMOUNT * dash;
 			}
 			doubleClickUPDelay = now;
 		}
 	}
 
 	if (InputManager::GetKeyState('S') || InputManager::GetKeyState(VK_DOWN)) {
-		transform->position.y += moveSpeed * TimerManager::GetDeltaTime();
+		transform->position.y += moveSpeed * dash * TimerManager::GetDeltaTime();
 
 		if (InputManager::GetKeyDown('S') || InputManager::GetKeyDown(VK_DOWN)) {
-			DWORD now = timeGetTime();
 			if (now - doubleClickDownDelay <= DOUBLE_CLICK) {
 				printf("DOWN DOUBLE CLICK\n");
-				transform->position.y += TELEPORT_AMOUNT;
+				transform->position.y += TELEPORT_AMOUNT * dash;
 			}
 			doubleClickDownDelay = now;
 		}
 	}
 
 	if (InputManager::GetKeyState('A') || InputManager::GetKeyState(VK_LEFT)) {
-		transform->position.x -= moveSpeed * TimerManager::GetDeltaTime();
+		transform->position.x -= moveSpeed * dash * TimerManager::GetDeltaTime();
 
 		if (InputManager::GetKeyDown('A') || InputManager::GetKeyDown(VK_LEFT)) {
-			DWORD now = timeGetTime();
 			if (now - doubleClickLeftDelay <= DOUBLE_CLICK) {
 				printf("LEFT DOUBLE CLICK\n");
-				transform->position.x -= TELEPORT_AMOUNT;
+				transform->position.x -= TELEPORT_AMOUNT * dash;
 			}
 			doubleClickLeftDelay = now;
 		}
 	}
 
 	if (InputManager::GetKeyState('D') || InputManager::GetKeyState(VK_RIGHT)) {
-		transform->position.x += moveSpeed * TimerManager::GetDeltaTime();
+		transform->position.x += moveSpeed * dash * TimerManager::GetDeltaTime();
 
 		if (InputManager::GetKeyDown('D') || InputManager::GetKeyDown(VK_RIGHT)) {
-			DWORD now = timeGetTime();
 			if (now - doubleClickRightDelay <= DOUBLE_CLICK) {
 				printf("RIGHT DOUBLE CLICK\n");
-				transform->position.x += TELEPORT_AMOUNT;
+				transform->position.x += TELEPORT_AMOUNT * dash;
 			}
 			doubleClickRightDelay = now;
 		}
