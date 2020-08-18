@@ -105,9 +105,9 @@ void Enemy::Shoot() {
 				((Player*) player)->bm->PushBackEnemyBullet(b);
 
 				b->transform->position = this->transform->position;
+				b->transform->position.y += this->transform->scale.y * this->renderer->GetHeight() / 2.0f;
 				// b->angleRate = 0.2f;
 				b->angle = 0.25f;
-				b->transform->SetRotation(90.0f + b->angle);
 				break;
 			}
 			case 2: {
@@ -129,8 +129,9 @@ void Enemy::Shoot() {
 
 				b->transform->position = this->transform->position;
 				// b->angleRate = 0.2f;
-				b->angle = atan2f(myY - otherY, myX - otherX) / (2.0f * PI) + 0.5f;
-				b->transform->SetRotation(90.0f + b->angle);
+				float angle = atan2f(myY - otherY, myX - otherX) / (2.0f * PI) + 0.5f;
+				b->angle = angle;
+				transform->SetRotation((angle - 0.25f) * 360);
 				break;
 			}
 			case 3: {
@@ -155,7 +156,6 @@ void Enemy::Shoot() {
 					b->transform->position = this->transform->position;
 					// b->angleRate = 0.2f;
 					b->angle = atan2f(myY - otherY, myX - otherX) / (2.0f * PI) + 0.5f;
-					b->transform->SetRotation(90.0f + b->angle);
 
 					break;
 				}
@@ -179,7 +179,6 @@ void Enemy::Shoot() {
 					b->transform->position = this->transform->position;
 					// b->angleRate = 0.2f;
 					b->angle = i;
-					b->transform->SetRotation(90.0f + b->angle);
 				}
 				break;
 			}
@@ -205,7 +204,6 @@ void Enemy::Shoot() {
 					b->transform->position = this->transform->position;
 					// b->angleRate = 0.2f;
 					b->angle = atan2f(myY - otherY, myX - otherX) / (2.0f * PI) + 0.5f;
-					b->transform->SetRotation(90.0f + b->angle);
 
 					break;
 				}
@@ -229,7 +227,6 @@ void Enemy::Shoot() {
 					b->transform->position = this->transform->position;
 					b->angleRate = 0.2f;
 					b->angle = i;
-					b->transform->SetRotation(90.0f + b->angle);
 				}
 				break;
 			}
@@ -255,7 +252,6 @@ void Enemy::Shoot() {
 					b->transform->position = this->transform->position;
 					// b->angleRate = 0.2f;
 					b->angle = atan2f(myY - otherY, myX - otherX) / (2.0f * PI) + 0.5f;
-					b->transform->SetRotation(90.0f + b->angle);
 
 					break;
 				}
@@ -279,7 +275,6 @@ void Enemy::Shoot() {
 					b->transform->position = this->transform->position;
 					b->angleRate = 0.2f;
 					b->angle = i;
-					b->transform->SetRotation(90.0f + b->angle);
 				}
 				break;
 			}

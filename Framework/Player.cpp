@@ -243,6 +243,7 @@ void Player::Shoot() {
 			bm->PushBackPlayerBullet(b);
 
 			b->transform->position = this->transform->position;
+			b->transform->position.y -= this->transform->scale.y * this->renderer->GetHeight() / 2.0f;
 			// b->angleRate = 0.2f;
 			b->angle = 0.75f;
 			if (SHOOT_MOUSE_LOC)
