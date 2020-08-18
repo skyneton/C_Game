@@ -132,7 +132,6 @@ void Player::Move() {
 
 		if (InputManager::GetKeyDown('W') || InputManager::GetKeyDown(VK_UP)) {
 			if (now - doubleClickUPDelay <= DOUBLE_CLICK) {
-				printf("UP DOUBLE CLICK\n");
 				transform->position.y -= TELEPORT_AMOUNT * dash;
 			}
 			doubleClickUPDelay = now;
@@ -144,7 +143,6 @@ void Player::Move() {
 
 		if (InputManager::GetKeyDown('S') || InputManager::GetKeyDown(VK_DOWN)) {
 			if (now - doubleClickDownDelay <= DOUBLE_CLICK) {
-				printf("DOWN DOUBLE CLICK\n");
 				transform->position.y += TELEPORT_AMOUNT * dash;
 			}
 			doubleClickDownDelay = now;
@@ -156,7 +154,6 @@ void Player::Move() {
 
 		if (InputManager::GetKeyDown('A') || InputManager::GetKeyDown(VK_LEFT)) {
 			if (now - doubleClickLeftDelay <= DOUBLE_CLICK) {
-				printf("LEFT DOUBLE CLICK\n");
 				transform->position.x -= TELEPORT_AMOUNT * dash;
 			}
 			doubleClickLeftDelay = now;
@@ -168,7 +165,6 @@ void Player::Move() {
 
 		if (InputManager::GetKeyDown('D') || InputManager::GetKeyDown(VK_RIGHT)) {
 			if (now - doubleClickRightDelay <= DOUBLE_CLICK) {
-				printf("RIGHT DOUBLE CLICK\n");
 				transform->position.x += TELEPORT_AMOUNT * dash;
 			}
 			doubleClickRightDelay = now;
