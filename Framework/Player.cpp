@@ -11,7 +11,7 @@
 #define SHOOT_MOUSE_LOC false
 #define DASH_COOL 6000
 #define DASH_START 4000
-#define DASH_AMOUNT 2.3f
+#define DASH_AMOUNT 2.f
 
 int Player::stage;
 int Player::healingChance;
@@ -117,7 +117,7 @@ void Player::Move() {
 
 	if (dash_status && InputManager::GetKeyState(VK_SHIFT)) {
 		if (now - dashTimer <= DASH_START) {
-			dash = DASH_AMOUNT;
+			dash = DASH_AMOUNT + stage * 0.3f;
 			dash_once = true;
 		}
 		else {
