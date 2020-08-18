@@ -17,5 +17,10 @@ public:
 	void Move(); //움직이는 함수
 	virtual void OnDestroy(); //삭제시 함수
 	bool CheckOutOfScreen();
+
+	DWORD GetSpawnTime();
+
+private:
+	DWORD SpawnBulletTime;
 };
 

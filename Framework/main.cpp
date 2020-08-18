@@ -5,7 +5,7 @@
 int main()
 {
 	Framework* f = new Framework;
-	f->Run(new GameScene(),L"타이틀", 800, 600, false);
+	f->Run(new GameScene(),L"타이틀", 1280, 800, false);
 	SAFE_DELETE(f);
 
 	return 0;

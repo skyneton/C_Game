@@ -8,6 +8,7 @@
 class InputManager
 {
 	friend class Framework;
+	friend class Player;
 public:
 	InputManager();
 	~InputManager();

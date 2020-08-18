@@ -67,6 +67,9 @@
     <ClCompile Include="RadiusCollider.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
+    <ClCompile Include="AABBCollider.cpp">
+      <Filter>Collider</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinApp.h">
@@ -116,6 +119,9 @@
     </ClInclude>
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="RadiusCollider.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="AABBCollider.h">
       <Filter>Collider</Filter>
     </ClInclude>
   </ItemGroup>

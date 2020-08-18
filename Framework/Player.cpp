@@ -5,19 +5,25 @@
 #include "Bullet.h"
 #include "Scene.h"
 
-#define TELEPORT_AMOUNT 100
+#define TELEPORT_AMOUNT 180
+#define DOUBLE_CLICK 250
+#define PI 3.141592653589793f
+#define SHOOT_MOUSE_LOC false
 
 int Player::stage;
+int Player::healingChance;
 
 Player::Player(const wchar_t* imagePath, float hp)
-:GameObject(imagePath), hp(hp)
+:GameObject(imagePath), hp(hp - 20.f)
 {
 	col = new RadiusCollider(transform, renderer->GetWidth() * 0.5f);
+	MaxHP = hp - 20.f;
 	moveSpeed = 180.f;
 	moveLock = 5;
 	bm = new BulletManager(this);
 	Scene::GetCurrentScene()->PushBackGameObject(bm);
 
+	SetHealingChance(0);
 	StageChange(1);
 }
 
@@ -28,31 +34,56 @@ Player::~Player()
 
 void Player::StageChange(int i) {
 	stage = i;
+	SetHealingChance(GetHealingChance() + 1);
+	MaxHP += 20.f;
+	hp += 20.f;
 
 	printf("Stage Changed: %d\n", stage);
 
 	for (int i = 0; i < stage; i++) {
 		Enemy* enemy = bm->PushBackEnemy(new Enemy(L"resources/enemy.png", stage*50.f, this));
 		Scene::GetCurrentScene()->PushBackGameObject(enemy);
-		enemy->transform->SetPosition(400.0f, 100.0f);
+		enemy->transform->SetPosition(WinApp::GetScreenWidth() / 2, 100.0f);
 		enemy->transform->SetScale(0.25f, 0.25f);
 	}
+}
+
+int Player::GetHealingChance() {
+	return healingChance;
 }
 
 int Player::GetStage() {
 	return stage;
 }
 
+void Player::SetHealingChance(int n) {
+	healingChance = n;
+	printf("HealingChance: %d\n", healingChance);
+}
+
 void Player::Update() {
 	//매 프레임 호출
 	Move();
 	Shoot();
+	Healing();
+}
+
+void Player::Healing() {
+	if (InputManager::GetKeyDown('F') && healingChance > 0) {
+		printf("Player HP Healing: %.2lf -> %.2lf\n", hp, MaxHP);
+		hp = MaxHP;
+		SetHealingChance(GetHealingChance() - 1);
+	}
 }
 
 bool Player::Hit(float damage) {
 	hp -= damage;
 	printf("PlayerDamaged: %.2lf -> %.2lf\n", hp + damage, hp);
 	return hp <= 0;
+}
+
+void Player::SetMaxHP(float hp) {
+	MaxHP = hp;
 }
 
 void Player::Move() {
@@ -64,7 +95,7 @@ void Player::Move() {
 
 		if (InputManager::GetKeyDown('W') || InputManager::GetKeyDown(VK_UP)) {
 			DWORD now = timeGetTime();
-			if (now - doubleClickUPDelay < 200) {
+			if (now - doubleClickUPDelay <= DOUBLE_CLICK) {
 				printf("UP DOUBLE CLICK\n");
 				transform->position.y -= TELEPORT_AMOUNT;
 			}
@@ -77,7 +108,7 @@ void Player::Move() {
 
 		if (InputManager::GetKeyDown('S') || InputManager::GetKeyDown(VK_DOWN)) {
 			DWORD now = timeGetTime();
-			if (now - doubleClickDownDelay < 200) {
+			if (now - doubleClickDownDelay <= DOUBLE_CLICK) {
 				printf("DOWN DOUBLE CLICK\n");
 				transform->position.y += TELEPORT_AMOUNT;
 			}
@@ -90,7 +121,7 @@ void Player::Move() {
 
 		if (InputManager::GetKeyDown('A') || InputManager::GetKeyDown(VK_LEFT)) {
 			DWORD now = timeGetTime();
-			if (now - doubleClickLeftDelay < 200) {
+			if (now - doubleClickLeftDelay <= DOUBLE_CLICK) {
 				printf("LEFT DOUBLE CLICK\n");
 				transform->position.x -= TELEPORT_AMOUNT;
 			}
@@ -103,7 +134,7 @@ void Player::Move() {
 
 		if (InputManager::GetKeyDown('D') || InputManager::GetKeyDown(VK_RIGHT)) {
 			DWORD now = timeGetTime();
-			if (now - doubleClickRightDelay < 200) {
+			if (now - doubleClickRightDelay <= DOUBLE_CLICK) {
 				printf("RIGHT DOUBLE CLICK\n");
 				transform->position.x += TELEPORT_AMOUNT;
 			}
@@ -159,6 +190,12 @@ void Player::Shoot() {
 	if (InputManager::GetKeyState(VK_SPACE)) {
 		DWORD delayCheck = timeGetTime();
 		if (delayCheck - shootDelay >= 400 || InputManager::GetKeyDown(VK_SPACE)) { //0.4초마다 총알 발사
+			float myY = transform->position.y;
+			float myX = transform->position.x;
+			POINT mousePos;
+			GetCursorPos(&mousePos);
+			ScreenToClient(InputManager::winApp->GetHWND(), &mousePos);
+
 			shootDelay = delayCheck;
 			Bullet* b;
 			srand(timeGetTime());
@@ -179,6 +216,10 @@ void Player::Shoot() {
 			b->transform->position = this->transform->position;
 			// b->angleRate = 0.2f;
 			b->angle = 0.75f;
+			if (SHOOT_MOUSE_LOC)
+				b->angle = atan2f(myY - mousePos.y, myX - mousePos.x) / (2.0f * PI) + 0.5f;
+			else
+				b->angle = 0.75f;
 			b->transform->SetRotation(90.0f + b->angle);
 		}
 	}

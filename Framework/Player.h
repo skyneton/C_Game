@@ -18,6 +18,7 @@ public:
 	virtual void Update();
 	void Move();
 	void Shoot();
+	void Healing();
 
 	float hp;
 
@@ -26,6 +27,9 @@ public:
 	void CheckOutOfScreen();
 	void StageChange(int stage);
 	static int GetStage();
+	static int GetHealingChance();
+	void SetHealingChance(int n);
+	void SetMaxHP(float hp);
 private:
 	float moveLock;
 	DWORD shootDelay;
@@ -34,5 +38,7 @@ private:
 	DWORD doubleClickDownDelay;
 	DWORD doubleClickRightDelay;
 	static int stage;
+	static int healingChance;
+	float MaxHP;
 };
 

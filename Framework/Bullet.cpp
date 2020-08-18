@@ -2,7 +2,7 @@
 #include "Bullet.h"
 #include "TimerManager.h"
 #include "RadiusCollider.h"
-#define PI 3.141592f
+#define PI 3.141592653589793f
 
 Bullet::Bullet(const wchar_t* imagePath) :GameObject(imagePath)
 {
@@ -12,6 +12,11 @@ Bullet::Bullet(const wchar_t* imagePath) :GameObject(imagePath)
 	angle = 0.f;
 	angleRate = 0.f;
 	damage = 0.f;
+	SpawnBulletTime = timeGetTime();
+}
+
+DWORD Bullet::GetSpawnTime() {
+	return SpawnBulletTime;
 }
 
 

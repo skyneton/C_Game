@@ -65,9 +65,11 @@ void BulletManager::RemoveDestroyed() {
 
 	if (GameScene::enemy.size() == 0) {
 		if (destroyedPlayer) {
+			player->SetHealingChance(0);
+			player->SetMaxHP(180.0f);
+			player->hp = 180.0f;
 			player->StageChange(1);
-			player->transform->SetPosition(400.f, 300.f);
-			player->hp = 200.f;
+			player->transform->SetPosition(WinApp::GetScreenWidth() / 2, 450.f);
 			destroyedPlayer = false;
 		}
 		else player->StageChange(player->GetStage() + 1);
@@ -84,8 +86,9 @@ void BulletManager::LateUpdate() {
 }
 
 void BulletManager::CheckCollision() {
+	DWORD now = timeGetTime();
 	for (auto& i : playerBulletList) {
-		if (i->CheckOutOfScreen()) {
+		if (i->CheckOutOfScreen() || now - i->GetSpawnTime() >= 4000 + 300 * player->GetStage()) {
 			DestroyPlayerBullet(i);
 		}
 		else {
@@ -103,7 +106,7 @@ void BulletManager::CheckCollision() {
 	}
 
 	for (auto& i : enemyBulletList) {
-		if (i->CheckOutOfScreen())
+		if (i->CheckOutOfScreen() || now - i->GetSpawnTime() >= 4000 + 300 * player->GetStage())
 			DestroyEnemyBullet(i);
 		else if (i->col->Intersected(player->col)) {
 			if (player->Hit(i->damage)) {
