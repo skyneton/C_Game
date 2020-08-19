@@ -28,6 +28,8 @@ Player::Player(const wchar_t* imagePath, float hp)
 	bm = new BulletManager(this);
 	Scene::GetCurrentScene()->PushBackGameObject(bm);
 
+	hp_bar = Scene::GetCurrentScene()->PushBackGameObject(new GameObject(L"resources/hp_bar.png"));
+
 	SetHealingChance(0);
 	StageChange(1);
 }
@@ -37,11 +39,22 @@ Player::~Player()
 {
 }
 
+void Player::HPChange(float h) {
+	hp = h;
+	HPBarChange();
+}
+
+void Player::HPBarChange() {
+	hp_bar->transform->SetScale(hp / MaxHP, 0.5f);
+	hp_bar->transform->position.y = hp_bar->renderer->GetHeight() / 2.0f + 3.f;
+	hp_bar->transform->position.x = hp_bar->renderer->GetWidth() * hp_bar->transform->scale.x / 2.0f + 10.f;
+}
+
 void Player::StageChange(int i) {
 	stage = i;
 	SetHealingChance(GetHealingChance() + 1);
 	MaxHP += 20.f;
-	hp += 20.f;
+	HPChange(hp + 20.f);
 
 	if (!(i % 3)) largeBulletChance++;
 
@@ -108,12 +121,16 @@ void Player::Healing() {
 		printf("Player HP Healing: %.2lf -> %.2lf\n", hp, MaxHP);
 		hp = MaxHP;
 		SetHealingChance(GetHealingChance() - 1);
+
+		HPBarChange();
 	}
 }
 
 bool Player::Hit(float damage) {
 	hp -= damage;
 	printf("PlayerDamaged: %.2lf -> %.2lf\n", hp + damage, hp);
+	HPBarChange();
+
 	return hp <= 0;
 }
 

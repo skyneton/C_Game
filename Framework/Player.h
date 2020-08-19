@@ -20,7 +20,6 @@ public:
 	void Shoot();
 	void Healing();
 
-	float hp;
 
 	RadiusCollider* col;
 	bool Hit(float damage);
@@ -33,6 +32,9 @@ public:
 	void SetMaxHP(float hp);
 
 	static int largeBulletChance;
+	void HPChange(float hp);
+	void HPBarChange();
+
 private:
 	float moveLock;
 	DWORD shootDelay;
@@ -47,5 +49,7 @@ private:
 	float MaxHP;
 	bool dash_status;
 	bool dash_once;
+	float hp;
+	GameObject* hp_bar;
 };
 

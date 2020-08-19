@@ -67,7 +67,7 @@ void BulletManager::RemoveDestroyed() {
 		if (destroyedPlayer) {
 			player->SetHealingChance(0);
 			player->SetMaxHP(180.0f);
-			player->hp = 180.0f;
+			player->HPChange(180.0f);
 			player->largeBulletChance = 0;
 			player->StageChange(1);
 			player->transform->SetPosition(WinApp::GetScreenWidth() / 2, 450.f);
