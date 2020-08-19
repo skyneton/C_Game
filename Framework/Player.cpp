@@ -12,9 +12,11 @@
 #define DASH_COOL 6000
 #define DASH_START 4000
 #define DASH_AMOUNT 2.f
+#define LARGE_BULLET true
 
 int Player::stage;
 int Player::healingChance;
+int Player::largeBulletChance;
 
 Player::Player(const wchar_t* imagePath, float hp)
 :GameObject(imagePath), hp(hp - 20.f)
@@ -40,6 +42,8 @@ void Player::StageChange(int i) {
 	SetHealingChance(GetHealingChance() + 1);
 	MaxHP += 20.f;
 	hp += 20.f;
+
+	if (!(i % 3)) largeBulletChance++;
 
 	printf("Stage Changed: %d\n", stage);
 
@@ -69,6 +73,34 @@ void Player::Update() {
 	Move();
 	Shoot();
 	Healing();
+	if (LARGE_BULLET)
+		ShootLargeBullet();
+}
+
+void Player::ShootLargeBullet() {
+	if (InputManager::GetKeyDown('E') && largeBulletChance > 0) {
+		largeBulletChance--;
+		printf("남은 대형 총알: %d\n", largeBulletChance);
+
+		float myY = transform->position.y;
+		float myX = transform->position.x;
+		POINT mousePos;
+		GetCursorPos(&mousePos);
+		ScreenToClient(InputManager::winApp->GetHWND(), &mousePos);
+
+
+		Bullet* b = new Bullet(L"resources/arrow1.png");
+		b->damage = 8000.f;
+		b->speed = 700.0f;
+
+		b->transform->SetScale(2.f, 2.f);
+		Scene::GetCurrentScene()->PushBackGameObject(b);
+		bm->PushBackPlayerBullet(b);
+
+		b->transform->position = this->transform->position;
+
+		b->angle = atan2f(myY - mousePos.y, myX - mousePos.x) / (2.0f * PI) + 0.5f;
+	}
 }
 
 void Player::Healing() {
@@ -108,7 +140,7 @@ void Player::Move() {
 	if (dash_status && dash_once && now - dashTimer > DASH_START) {
 		dash_status = false;
 		dashDelay = now;
-		printf("CAN't DASH\n");
+		printf("CAN'T DASH\n");
 	}
 
 	if (dash_status && InputManager::GetKeyDown(VK_SHIFT)) {
@@ -243,7 +275,8 @@ void Player::Shoot() {
 			bm->PushBackPlayerBullet(b);
 
 			b->transform->position = this->transform->position;
-			b->transform->position.y -= this->transform->scale.y * this->renderer->GetHeight() / 2.0f;
+			if (!SHOOT_MOUSE_LOC)
+				b->transform->position.y -= this->transform->scale.y * this->renderer->GetHeight() / 2.0f;
 			// b->angleRate = 0.2f;
 			b->angle = 0.75f;
 			if (SHOOT_MOUSE_LOC)

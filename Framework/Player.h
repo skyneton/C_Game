@@ -29,7 +29,10 @@ public:
 	static int GetStage();
 	static int GetHealingChance();
 	void SetHealingChance(int n);
+	void ShootLargeBullet();
 	void SetMaxHP(float hp);
+
+	static int largeBulletChance;
 private:
 	float moveLock;
 	DWORD shootDelay;

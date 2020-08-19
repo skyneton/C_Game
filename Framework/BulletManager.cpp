@@ -68,6 +68,7 @@ void BulletManager::RemoveDestroyed() {
 			player->SetHealingChance(0);
 			player->SetMaxHP(180.0f);
 			player->hp = 180.0f;
+			player->largeBulletChance = 0;
 			player->StageChange(1);
 			player->transform->SetPosition(WinApp::GetScreenWidth() / 2, 450.f);
 			destroyedPlayer = false;
@@ -94,10 +95,14 @@ void BulletManager::CheckCollision() {
 		else {
 			for (auto& enemy : GameScene::enemy) {
 				if (i->col->Intersected(enemy->col)) {
+					if (enemy->hp < i->damage) {
+						i->damage -= enemy->hp;
+					}
+					else
+						DestroyPlayerBullet(i);
 					if (enemy->Hit(i->damage)) {
 						DestroyEnemy(enemy);
 					}
-					DestroyPlayerBullet(i);
 
 					break;
 				}
@@ -114,6 +119,19 @@ void BulletManager::CheckCollision() {
 				break;
 			}
 			DestroyEnemyBullet(i);
+		}
+	}
+
+	for (auto& p : playerBulletList) {
+		for (auto& e : enemyBulletList) {
+			if (p->col->Intersected(e->col)) {
+				DestroyEnemyBullet(e);
+				if (p->damage > e->damage) {
+					p->damage -= e->damage;
+				}else
+					DestroyPlayerBullet(p);
+				break;
+			}
 		}
 	}
 }
