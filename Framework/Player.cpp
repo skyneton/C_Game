@@ -90,7 +90,7 @@ void Player::ShootLargeBullet() {
 
 
 		Bullet* b = new Bullet(L"resources/arrow1.png");
-		b->damage = 8000.f;
+		b->damage = 2000.f * stage;
 		b->speed = 700.0f;
 
 		b->transform->SetScale(2.f, 2.f);
